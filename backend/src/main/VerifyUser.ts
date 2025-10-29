@@ -25,14 +25,27 @@ const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction): vo
   
   console.log("token = ", token);
 
+  // Ensure token is defined after processing
+  if (!token) {
+    res.status(401).json({ message: "Invalid token format" });
+    return;
+  }
+
   try {
     if (!process.env.TOKEN) {
       res.status(500).json({ message: "Server configuration error" });
       return;
     }
 
-    const secret = process.env.TOKEN as string;
-    const decoded = jwt.verify(token, secret) as unknown as { id: string; role: string };
+    const secret = process.env.TOKEN;
+    const decoded = jwt.verify(token, secret) as { id: string; role: string };
+    
+    // Ensure the decoded object has the required properties
+    if (!decoded.id || !decoded.role) {
+      res.status(403).json({ message: "Invalid token payload" });
+      return;
+    }
+    
     req.userId = decoded.id;
     req.userRole = decoded.role;
     console.log("deco", decoded);
