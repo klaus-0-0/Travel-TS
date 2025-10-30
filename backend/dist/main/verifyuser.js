@@ -12,11 +12,18 @@ const authMiddleware = (req, res, next) => {
         return;
     }
     let token = authHeader.split(" ")[1];
+    // @ts-ignore
     // Remove quotes if they exist
     if (token.startsWith('"') && token.endsWith('"')) {
+        // @ts-ignore
         token = token.slice(1, -1);
     }
     console.log("token = ", token);
+    // Ensure token is defined after processing
+    if (!token) {
+        res.status(401).json({ message: "Invalid token format" });
+        return;
+    }
     try {
         if (!process.env.TOKEN) {
             res.status(500).json({ message: "Server configuration error" });
@@ -24,6 +31,11 @@ const authMiddleware = (req, res, next) => {
         }
         const secret = process.env.TOKEN;
         const decoded = jsonwebtoken_1.default.verify(token, secret);
+        // Ensure the decoded object has the required properties
+        if (!decoded.id || !decoded.role) {
+            res.status(403).json({ message: "Invalid token payload" });
+            return;
+        }
         req.userId = decoded.id;
         req.userRole = decoded.role;
         console.log("deco", decoded);
@@ -35,4 +47,4 @@ const authMiddleware = (req, res, next) => {
     }
 };
 exports.default = authMiddleware;
-//# sourceMappingURL=verifyuser.js.map
+//# sourceMappingURL=VerifyUser.js.map

@@ -12,8 +12,8 @@ const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
 const prisma = new client_1.PrismaClient();
 // Import middleware
-const verifyuser_1 = __importDefault(require("./verifyuser"));
-router.get("/check", verifyuser_1.default, (req, res) => {
+const VerifyUser_1 = __importDefault(require("./VerifyUser"));
+router.get("/check", VerifyUser_1.default, (req, res) => {
     res.status(200).json({ user: req.user });
 });
 router.post("/signup", async (req, res) => {
@@ -72,7 +72,7 @@ router.post("/login", async (req, res) => {
         res.status(500).json({ message: "Server issue", error: errorMessage });
     }
 });
-router.get("/FetchTravelLocation", verifyuser_1.default, async (req, res) => {
+router.get("/FetchTravelLocation", VerifyUser_1.default, async (req, res) => {
     try {
         console.log("Fetching items...");
         const destinations = await prisma.travelLocation.findMany({
@@ -98,7 +98,7 @@ router.get("/FetchTravelLocation", verifyuser_1.default, async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
-router.post("/bookings", verifyuser_1.default, async (req, res) => {
+router.post("/bookings", VerifyUser_1.default, async (req, res) => {
     try {
         const { locationId, checkIn, checkOut, guests, totalPrice } = req.body;
         const userId = req.userId;
@@ -156,7 +156,7 @@ router.post("/bookings", verifyuser_1.default, async (req, res) => {
         res.status(500).json({ message: "Server error", error: errorMessage });
     }
 });
-router.get("/bookings", verifyuser_1.default, async (req, res) => {
+router.get("/bookings", VerifyUser_1.default, async (req, res) => {
     try {
         const userId = req.userId;
         if (!userId) {
@@ -186,7 +186,7 @@ router.get("/bookings", verifyuser_1.default, async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
-router.put("/bookings/:id/cancel", verifyuser_1.default, async (req, res) => {
+router.put("/bookings/:id/cancel", VerifyUser_1.default, async (req, res) => {
     try {
         const { id } = req.params;
         const userId = req.userId;

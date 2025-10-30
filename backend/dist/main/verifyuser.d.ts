@@ -5,4 +5,4 @@ interface AuthRequest extends Request {
 }
 declare const authMiddleware: (req: AuthRequest, res: Response, next: NextFunction) => void;
 export default authMiddleware;
-//# sourceMappingURL=verifyuser.d.ts.map
+//# sourceMappingURL=VerifyUser.d.ts.map
